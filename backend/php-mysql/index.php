@@ -2,15 +2,15 @@
 	set_time_limit(0);
 	function setup_saveloadlist() {
 		define("SERVER","localhost");
-		define("USER","");
-		define("PASSWORD","");
+		define("USER","root");
+		define("PASSWORD","root");
 		define("DB","home");
 		define("TABLE","wwwsqldesigner");
 	}
 	function setup_import() {
 		define("SERVER","localhost");
-		define("USER","");
-		define("PASSWORD","");
+		define("USER","root");
+		define("PASSWORD","root");
 		define("DB","information_schema");
 	}
 	class mysqlDB {
