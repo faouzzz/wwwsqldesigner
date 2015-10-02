@@ -2,9 +2,14 @@
 <datatypes db="sqlite">
 	<group label="Affinity">
 		<type label="Text" default="" length="1" sql="TEXT" quote="'" color="rgb(255,200,200)" />
+		<type label="nVarchar" default="" length="254" sql="NVARCHAR" quote="'" color="rgb(255,200,200)" />
+		<type label="Varchar" default="" length="254" sql="VARCHAR" quote="'" color="rgb(255,200,200)" />
 		<type label="Numeric" default="0" length="0" sql="NUMERIC" quote="" color="rgb(238,238,170)" />
 		<type label="Integer" default="0" length="0" sql="INTEGER" quote="" color="rgb(238,238,170)" />
+		<type label="Int" default="0" length="11" sql="INT" quote="" color="rgb(238,238,170)" />
 		<type label="Real" default="0" length="0" sql="REAL" quote="" color="rgb(238,238,170)" />
 		<type label="None" default="" length="0" sql="NONE" quote="" color="rgb(200,255,200)" />
+		<type label="Datetime" length="0" sql="datetime" quote="" bytes="8" color="rgb(97, 191, 226)" />
+		<type label="Date" length="0" sql="date" quote="" bytes="4" color="rgb(97, 191, 226)" />
 	</group>
 </datatypes>

@@ -13,5 +13,8 @@ var CONFIG = {
 	RELATION_COLORS: ["#000", "#800", "#080", "#008", "#088", "#808", "#088"],
 
 	STATIC_PATH: "",
-	XHR_PATH: ""
+	XHR_PATH: "",
+
+	SHOW_SIZE: 1,
+	SHOW_TYPE: 1
 }
