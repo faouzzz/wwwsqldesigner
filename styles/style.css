@@ -30,7 +30,7 @@ body {
 	background-color: #ccc;
 	position: fixed; 
 	top: 0px;
-	left: 0px;
+	right: 0px;
 	width: 150px;
 	padding: 0px 5px 5px;
 	-moz-box-shadow: -4px 4px 8px #888; /* FF 3.5+ */
@@ -76,7 +76,7 @@ body {
 	position: fixed;
 	width: 150px;
 	height: 150px;
-	left: 0px;
+	right: 0px;
 	bottom: 0px;
 	background-color: #fff;
 	border: 1px solid #000;

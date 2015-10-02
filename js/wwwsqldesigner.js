@@ -1625,6 +1625,7 @@ SQL.TableManager.prototype.init = function(owner) {
 	this.save = this.bind(this.save);
 	
 	OZ.Event.add("area", "click", this.bind(this.click));
+	OZ.Event.add("area", "contextmenu", this.bind(this.rClick));
 	OZ.Event.add(this.dom.addtable, "click", this.bind(this.preAdd));
 	OZ.Event.add(this.dom.removetable, "click", this.bind(this.remove));
 	OZ.Event.add(this.dom.cleartables, "click", this.bind(this.clear));
@@ -1727,6 +1728,8 @@ SQL.TableManager.prototype.click = function(e) { /* finish adding new table */
 	this.owner.rowManager.select(false);
 	if (this.selection.length == 1) { this.edit(e); }
 }
+
+SQL.TableManager.prototype.rClick = function (e) {}
 
 SQL.TableManager.prototype.preAdd = function(e) { /* click add new table */
 	if (this.adding) {
