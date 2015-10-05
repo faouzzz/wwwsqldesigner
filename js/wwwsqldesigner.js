@@ -60,23 +60,23 @@ SQL.Row.prototype.init = function(owner, title, data) {
 	this.keys = [];
 	this.selected = false;
 	this.expanded = false;
-	
+
 	SQL.Visual.prototype.init.apply(this);
-	
+
 	this.data.type = 0;
 	this.data.size = "";
 	this.data.def = null;
 	this.data.nll = true;
 	this.data.ai = false;
 	this.data.comment = "";
-	
+
 	if (data) { this.update(data); }
 	this.setTitle(title);
 }
 
 SQL.Row.prototype._build = function() {
 	this.dom.container = OZ.DOM.elm("tbody");
-	
+
 	this.dom.content = OZ.DOM.elm("tr");
 	this.dom.selected = OZ.DOM.elm("div", {className:"selected",innerHTML:"&raquo;&nbsp;"});
 	this.dom.title = OZ.DOM.elm("div", {className:"title"});
@@ -89,7 +89,7 @@ SQL.Row.prototype._build = function() {
 		[this.dom.content, td1, td2],
 		[td1, this.dom.selected, this.dom.title]
 	);
-	
+
 	this.enter = this.bind(this.enter);
 	this.changeComment = this.bind(this.changeComment);
 
@@ -118,7 +118,7 @@ SQL.Row.prototype.setTitle = function(t) {
 		var tt = r.row2.getTitle().replace(new RegExp(old,"g"),t);
 		if (tt != r.row2.getTitle()) { r.row2.setTitle(tt); }
 	}
-	
+
 	SQL.Visual.prototype.setTitle.apply(this, [t]);
 }
 
@@ -136,7 +136,7 @@ SQL.Row.prototype.dblclick = function(e) { /* dblclicked on row */
 SQL.Row.prototype.update = function(data) { /* update subset of row data */
 	var des = SQL.Designer;
 	if (data.nll && data.def && data.def.match(/^null$/i)) { data.def = null; }
-	
+
 	for (var p in data) { this.data[p] = data[p]; }
 	if (!this.data.nll && this.data.def === null) { this.data.def = ""; }
 
@@ -170,7 +170,7 @@ SQL.Row.prototype.down = function() { /* shift down */
 
 SQL.Row.prototype.buildEdit = function() {
 	OZ.DOM.clear(this.dom.container);
-	
+
 	var elms = [];
 	this.dom.name = OZ.DOM.elm("input");
 	this.dom.name.type = "text";
@@ -195,14 +195,14 @@ SQL.Row.prototype.buildEdit = function() {
 	this.dom.nll = OZ.DOM.elm("input");
 	this.dom.nll.type = "checkbox";
 	elms.push(["null",this.dom.nll]);
-	
+
 	this.dom.comment = OZ.DOM.elm("span",{className:"comment"});
 	this.dom.comment.innerHTML = this.data.comment;
 
 	this.dom.commentbtn = OZ.DOM.elm("input");
 	this.dom.commentbtn.type = "button";
 	this.dom.commentbtn.value = _("comment");
-	
+
 	OZ.Event.add(this.dom.commentbtn, "click", this.changeComment);
 
 	for (var i=0;i<elms.length;i++) {
@@ -218,7 +218,7 @@ SQL.Row.prototype.buildEdit = function() {
 		);
 		this.dom.container.appendChild(tr);
 	}
-	
+
 	var tr = OZ.DOM.elm("tr");
 	var td1 = OZ.DOM.elm("td");
 	var td2 = OZ.DOM.elm("td");
@@ -258,7 +258,7 @@ SQL.Row.prototype.collapse = function() {
 		nll: this.dom.nll.checked,
 		ai: this.dom.ai.checked
 	}
-	
+
 	OZ.DOM.clear(this.dom.container);
 	this.dom.container.appendChild(this.dom.content);
 
@@ -270,7 +270,7 @@ SQL.Row.prototype.load = function() { /* put data to expanded form */
 	this.dom.name.value = this.getTitle();
 	var def = this.data.def;
 	if (def === null) { def = "NULL"; }
-	
+
 	this.dom.def.value = def;
 	this.dom.size.value = this.data.size;
 	this.dom.nll.checked = this.data.nll;
@@ -286,17 +286,17 @@ SQL.Row.prototype.redraw = function() {
 	if (this.isKey()) { OZ.DOM.addClass(this.dom.title, "key"); }
 	this.dom.selected.style.display = (this.selected ? "" : "none");
 	this.dom.container.title = this.data.comment;
-	
+
 	var typehint = [];
 	if (this.owner.owner.getOption("showtype")) {
 		var elm = this.getDataType();
 		typehint.push(elm.getAttribute("sql"));
 	}
-	
+
 	if (this.owner.owner.getOption("showsize") && this.data.size) {
 		typehint.push("(" + this.data.size + ")");
 	}
-	
+
 	this.dom.typehint.innerHTML = typehint.join(" ");
 	this.owner.redraw();
 	this.owner.owner.rowManager.redraw();
@@ -364,14 +364,14 @@ SQL.Row.prototype.destroy = function() {
 	while (this.relations.length) {
 		this.owner.owner.removeRelation(this.relations[0]);
 	}
-	for (var i=0;i<this.keys.length;i++){ 
+	for (var i=0;i<this.keys.length;i++){
 		this.keys[i].removeRow(this);
 	}
 }
 
 SQL.Row.prototype.toXML = function() {
 	var xml = "";
-	
+
 	var t = this.getTitle().replace(/"/g,"&quot;");
 	var nn = (this.data.nll ? "1" : "0");
 	var ai = (this.data.ai ? "1" : "0");
@@ -381,14 +381,14 @@ SQL.Row.prototype.toXML = function() {
 	var t = elm.getAttribute("sql");
 	if (this.data.size.length) { t += "("+this.data.size+")"; }
 	xml += "<datatype>"+t+"</datatype>\n";
-	
+
 	if (this.data.def || this.data.def === null) {
 		var q = elm.getAttribute("quote");
 		var d = this.data.def;
-		if (d === null) { 
-			d = "NULL"; 
-		} else if (d != "CURRENT_TIMESTAMP") { 
-			d = q+d+q; 
+		if (d === null) {
+			d = "NULL";
+		} else if (d != "CURRENT_TIMESTAMP") {
+			d = q+d+q;
 		}
 		xml += "<default>"+d+"</default>";
 	}
@@ -398,28 +398,28 @@ SQL.Row.prototype.toXML = function() {
 		if (r.row2 != this) { continue; }
 		xml += '<relation table="'+r.row1.owner.getTitle()+'" row="'+r.row1.getTitle()+'" />\n';
 	}
-	
-	if (this.data.comment) { 
+
+	if (this.data.comment) {
 		var escaped = this.data.comment.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;");
-		xml += "<comment>"+escaped+"</comment>\n"; 
+		xml += "<comment>"+escaped+"</comment>\n";
 	}
-	
+
 	xml += "</row>\n";
 	return xml;
 }
 
 SQL.Row.prototype.fromXML = function(node) {
 	var name = node.getAttribute("name");
-	
+
 	var obj = { type:0, size:"" };
 	obj.nll = (node.getAttribute("null") == "1");
 	obj.ai = (node.getAttribute("autoincrement") == "1");
-	
+
 	var cs = node.getElementsByTagName("comment");
 	if (cs.length && cs[0].firstChild) { obj.comment = cs[0].firstChild.nodeValue; }
-	
+
 	var d = node.getElementsByTagName("datatype");
-	if (d.length && d[0].firstChild) { 
+	if (d.length && d[0].firstChild) {
 		var s = d[0].firstChild.nodeValue;
 		var r = s.match(/^([^\(]+)(\((.*)\))?.*$/);
 		var type = r[1];
@@ -431,10 +431,10 @@ SQL.Row.prototype.fromXML = function(node) {
 			if (sql == type || (re && new RegExp(re).exec(type)) ) { obj.type = i; }
 		}
 	}
-	
+
 	var elm = DATATYPES.getElementsByTagName("type")[obj.type];
 	var d = node.getElementsByTagName("default");
-	if (d.length && d[0].firstChild) { 
+	if (d.length && d[0].firstChild) {
 		var def = d[0].firstChild.nodeValue;
 		obj.def = def;
 		var q = elm.getAttribute("quote");
@@ -471,7 +471,7 @@ SQL.Row.prototype.isKey = function() {
 }
 
 SQL.Row.prototype.enter = function(e) {
-	if (e.keyCode == 13) { 
+	if (e.keyCode == 13) {
 		this.collapse();
 	}
 }
@@ -501,7 +501,7 @@ SQL.Relation.prototype.init = function(owner, row1, row2) {
 	this.row1.addRelation(this);
 	this.row2.addRelation(this);
 	this.dom = [];
-	
+
 	if (this.owner.vector) {
 		var path = document.createElementNS(this.owner.svgNS, "path");
 		path.setAttribute("stroke", this.color);
@@ -521,7 +521,7 @@ SQL.Relation.prototype.init = function(owner, row1, row2) {
 			this.owner.dom.container.appendChild(div);
 		}
 	}
-	
+
 	this.redraw();
 }
 
@@ -572,11 +572,11 @@ SQL.Relation.prototype.redrawSide = function(p1, p2, x) {
 		this.dom[0].style.left = Math.min(x,p1[0])+"px";
 		this.dom[0].style.top = p1[1]+"px";
 		this.dom[0].style.width = Math.abs(p1[0]-x)+"px";
-		
+
 		this.dom[1].style.left = x+"px";
 		this.dom[1].style.top = Math.min(p1[1],p2[1]) + "px";
 		this.dom[1].style.height = (Math.abs(p1[1] - p2[1])+CONFIG.RELATION_THICKNESS)+"px";
-		
+
 		this.dom[2].style.left = Math.min(x,p2[0])+"px";
 		this.dom[2].style.top = p2[1]+"px";
 		this.dom[2].style.width = Math.abs(p2[0]-x)+"px";
@@ -594,13 +594,13 @@ SQL.Relation.prototype.redraw = function() { /* draw connector */
 	var r2 = l2 + t2.offsetWidth;
 	var t1 = t1.offsetTop + this.row1.dom.container.offsetTop + Math.round(this.row1.dom.container.offsetHeight/2);
 	var t2 = t2.offsetTop + this.row2.dom.container.offsetTop + Math.round(this.row2.dom.container.offsetHeight/2);
-	
+
 	if (this.row1.owner.selected) { t1++; l1++; r1--; }
 	if (this.row2.owner.selected) { t2++; l2++; r2--; }
-	
+
 	var p1 = [0,0];
 	var p2 = [0,0];
-	
+
 	if (r1 < l2 || r2 < l1) { /* between tables */
 		if (Math.abs(r1 - l2) < Math.abs(r2 - l1)) {
 			p1 = [r1,t1];
@@ -650,7 +650,7 @@ SQL.Table.prototype.init = function(owner, name, x, y, z) {
 	this.selected = false;
 	SQL.Visual.prototype.init.apply(this);
 	this.data.comment = "";
-	
+
 	this.setTitle(name);
 	this.x = x || 0;
 	this.y = y || 0;
@@ -664,14 +664,14 @@ SQL.Table.prototype._build = function() {
 	var thead = OZ.DOM.elm("thead");
 	var tr = OZ.DOM.elm("tr");
 	this.dom.title = OZ.DOM.elm("td", {className:"title", colSpan:2});
-	
+
 	OZ.DOM.append(
 		[this.dom.container, this.dom.content],
 		[this.dom.content, thead],
 		[thead, tr],
 		[tr, this.dom.title]
 	);
-	
+
 	this.dom.mini = OZ.DOM.elm("div", {className:"mini"});
 	this.owner.map.dom.container.appendChild(this.dom.mini);
 
@@ -722,7 +722,7 @@ SQL.Table.prototype.click = function(e) {
 	OZ.Event.stop(e);
 	var t = OZ.Event.target(e);
 	this.owner.tableManager.select(this);
-	
+
 	if (t != this.dom.title) { return; } /* click on row */
 
 	this.dispatch("tableclick",this);
@@ -734,7 +734,7 @@ SQL.Table.prototype.dblclick = function(e) {
 	if (t == this.dom.title) { this.owner.tableManager.edit(); }
 }
 
-SQL.Table.prototype.select = function() { 
+SQL.Table.prototype.select = function() {
 	if (this.selected) { return; }
 	this.selected = true;
 	OZ.DOM.addClass(this.dom.container, "selected");
@@ -742,7 +742,7 @@ SQL.Table.prototype.select = function() {
 	this.redraw();
 }
 
-SQL.Table.prototype.deselect = function() { 
+SQL.Table.prototype.deselect = function() {
 	if (!this.selected) { return; }
 	this.selected = false;
 	OZ.DOM.removeClass(this.dom.container, "selected");
@@ -760,7 +760,7 @@ SQL.Table.prototype.addRow = function(title, data) {
 
 SQL.Table.prototype.removeRow = function(r) {
 	var idx = this.rows.indexOf(r);
-	if (idx == -1) { return; } 
+	if (idx == -1) { return; }
 	r.destroy();
 	this.rows.splice(idx,1);
 	this.redraw();
@@ -785,15 +785,15 @@ SQL.Table.prototype.redraw = function() {
 	if (this.selected) { x--; y--; }
 	this.dom.container.style.left = x+"px";
 	this.dom.container.style.top = y+"px";
-	
+
 	var ratioX = this.owner.map.width / this.owner.width;
 	var ratioY = this.owner.map.height / this.owner.height;
-	
+
 	var w = this.dom.container.offsetWidth * ratioX;
 	var h = this.dom.container.offsetHeight * ratioY;
 	var x = this.x * ratioX;
 	var y = this.y * ratioY;
-	
+
 	this.dom.mini.style.width = Math.round(w)+"px";
 	this.dom.mini.style.height = Math.round(h)+"px";
 	this.dom.mini.style.left = Math.round(x)+"px";
@@ -801,7 +801,7 @@ SQL.Table.prototype.redraw = function() {
 
 	this.width = this.dom.container.offsetWidth;
 	this.height = this.dom.container.offsetHeight;
-	
+
 	var rs = this.getRelations();
 	for (var i=0;i<rs.length;i++) { rs[i].redraw(); }
 }
@@ -809,7 +809,7 @@ SQL.Table.prototype.redraw = function() {
 SQL.Table.prototype.moveBy = function(dx, dy) {
 	this.x += dx;
 	this.y += dy;
-	
+
 	this.snap();
 	this.redraw();
 }
@@ -834,7 +834,7 @@ SQL.Table.prototype.down = function(e) { /* mousedown - start drag */
 	OZ.Event.stop(e);
 	var t = OZ.Event.target(e);
 	if (t != this.dom.title) { return; } /* on a row */
-	
+
 	/* touch? */
 	if (e.type == "touchstart") {
 		var event = e.touches[0];
@@ -845,7 +845,7 @@ SQL.Table.prototype.down = function(e) { /* mousedown - start drag */
 		var moveEvent = "mousemove";
 		var upEvent = "mouseup";
 	}
-	
+
 	/* a non-shift click within a selection preserves the selection */
 	if (e.shiftKey || ! this.selected) {
 		this.owner.tableManager.select(this, e.shiftKey);
@@ -857,17 +857,17 @@ SQL.Table.prototype.down = function(e) { /* mousedown - start drag */
 	t.x = new Array(n);
 	t.y = new Array(n);
 	for (var i=0;i<n;i++) {
-		/* position relative to mouse cursor */ 
+		/* position relative to mouse cursor */
 		t.x[i] = t.active[i].x - event.clientX;
 		t.y[i] = t.active[i].y - event.clientY;
 	}
-	
-	if (this.owner.getOption("hide")) { 
+
+	if (this.owner.getOption("hide")) {
 		for (var i=0;i<n;i++) {
 			t.active[i].hideRelations();
 		}
 	}
-	
+
 	this.documentMove = OZ.Event.add(document, moveEvent, this.bind(this.move));
 	this.documentUp = OZ.Event.add(document, upEvent, this.bind(this.up));
 }
@@ -883,9 +883,9 @@ SQL.Table.prototype.toXML = function() {
 		xml += this.keys[i].toXML();
 	}
 	var c = this.getComment();
-	if (c) { 
+	if (c) {
 		c = c.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;");
-		xml += "<comment>"+c+"</comment>\n"; 
+		xml += "<comment>"+c+"</comment>\n";
 	}
 	xml += "</table>\n";
 	return xml;
@@ -977,9 +977,9 @@ SQL.Table.prototype.move = function(e) { /* mousemove */
 SQL.Table.prototype.up = function(e) {
 	var t = SQL.Table;
 	var d = SQL.Designer;
-	if (d.getOption("hide")) { 
+	if (d.getOption("hide")) {
 		for (var i=0;i<t.active.length;i++) {
-			t.active[i].showRelations(); 
+			t.active[i].showRelations();
 			t.active[i].redraw();
 		}
 	}
@@ -1105,7 +1105,7 @@ SQL.Rubberband.prototype.move = function(e) {
 	if (x<this.x0) { this.x = x; } else { this.x = this.x0; }
 	if (y<this.y0) { this.y = y; } else { this.y = this.y0; }
 	this.redraw();
-	this.dom.container.style.visibility = "visible";	
+	this.dom.container.style.visibility = "visible";
 }
 
 SQL.Rubberband.prototype.up = function(e) {
@@ -1133,14 +1133,14 @@ SQL.Map.prototype.init = function(owner) {
 	this.dom.container = OZ.$("minimap");
 	this.width = this.dom.container.offsetWidth - 2;
 	this.height = this.dom.container.offsetHeight - 2;
-	
+
 	this.dom.port = OZ.DOM.elm("div",{className:"port", zIndex:1});
 	this.dom.container.appendChild(this.dom.port);
 	this.sync = this.bind(this.sync);
-	
+
 	this.flag = false;
 	this.sync();
-	
+
 	OZ.Event.add(window, "resize", this.sync);
 	OZ.Event.add(window, "scroll", this.sync);
 	OZ.Event.add(this.dom.container, "mousedown", this.bind(this.down));
@@ -1156,7 +1156,7 @@ SQL.Map.prototype.down = function(e) { /* mousedown - move view and start drag *
 	this.x = Math.round(pos[0] + this.l + this.w/2);
 	this.y = Math.round(pos[1] + this.t + this.h/2);
 	this.move(e);
-	
+
 	if (e.type == "touchstart") {
 		var eventMove = "touchmove";
 		var eventUp = "touchend";
@@ -1172,33 +1172,33 @@ SQL.Map.prototype.down = function(e) { /* mousedown - move view and start drag *
 SQL.Map.prototype.move = function(e) { /* mousemove */
 	if (!this.flag) { return; }
 	OZ.Event.prevent(e);
-	
+
 	if (e.type.match(/touch/)) {
 		if (e.touches.length > 1) { return; }
 		var event = e.touches[0];
 	} else {
 		var event = e;
 	}
-	
+
 	var dx = event.clientX - this.x;
 	var dy = event.clientY - this.y;
 	if (this.l + dx < 0) { dx = -this.l; }
 	if (this.t + dy < 0) { dy = -this.t; }
 	if (this.l + this.w + 4 + dx > this.width) { dx = this.width - 4 - this.l - this.w; }
 	if (this.t + this.h + 4 + dy > this.height) { dy = this.height - 4 - this.t - this.h; }
-	
-	
+
+
 	this.x += dx;
 	this.y += dy;
-	
+
 	this.l += dx;
 	this.t += dy;
-	
+
 	var coefX = this.width / this.owner.width;
 	var coefY = this.height / this.owner.height;
 	var left = this.l / coefX;
 	var top = this.t / coefY;
-	
+
 	if (OZ.webkit) {
 		document.body.scrollLeft = Math.round(left);
 		document.body.scrollTop = Math.round(top);
@@ -1206,7 +1206,7 @@ SQL.Map.prototype.move = function(e) { /* mousemove */
 		document.documentElement.scrollLeft = Math.round(left);
 		document.documentElement.scrollTop = Math.round(top);
 	}
-	
+
 	this.redraw();
 }
 
@@ -1227,12 +1227,12 @@ SQL.Map.prototype.sync = function() { /* when window changes, adjust map */
 	var h = dims[1] * scaleY - 4 - 0;
 	var x = scroll[0] * scaleX;
 	var y = scroll[1] * scaleY;
-	
+
 	this.w = Math.round(w);
 	this.h = Math.round(h);
 	this.l = Math.round(x);
 	this.t = Math.round(y);
-	
+
 	this.redraw();
 }
 
@@ -1254,7 +1254,7 @@ SQL.IO.prototype.init = function(owner) {
 		container:OZ.$("io")
 	};
 
-	var ids = ["saveload","clientlocalsave", "clientsave", "clientlocalload", "clientlocallist","clientload", "clientsql", 
+	var ids = ["saveload","clientlocalsave", "clientsave", "clientlocalload", "clientlocallist","clientload", "clientsql",
 				"quicksave", "serversave", "serverload",
 				"serverlist", "serverimport"];
 	for (var i=0;i<ids.length;i++) {
@@ -1263,7 +1263,7 @@ SQL.IO.prototype.init = function(owner) {
 		this.dom[id] = elm;
 		elm.value = _(id);
 	}
-	
+
 	this.dom.quicksave.value += " (F2)";
 
 	var ids = ["client","server","output","backendlabel"];
@@ -1272,18 +1272,18 @@ SQL.IO.prototype.init = function(owner) {
 		var elm = OZ.$(id);
 		elm.innerHTML = _(id);
 	}
-	
+
 	this.dom.ta = OZ.$("textarea");
 	this.dom.backend = OZ.$("backend");
-	
+
 	this.dom.container.parentNode.removeChild(this.dom.container);
 	this.dom.container.style.visibility = "";
-	
+
 	this.saveresponse = this.bind(this.saveresponse);
 	this.loadresponse = this.bind(this.loadresponse);
 	this.listresponse = this.bind(this.listresponse);
 	this.importresponse = this.bind(this.importresponse);
-	
+
 	OZ.Event.add(this.dom.saveload, "click", this.bind(this.click));
 	OZ.Event.add(this.dom.clientlocalsave, "click", this.bind(this.clientlocalsave));
 	OZ.Event.add(this.dom.clientsave, "click", this.bind(this.clientsave));
@@ -1331,7 +1331,7 @@ SQL.IO.prototype.click = function() { /* open io dialog */
 SQL.IO.prototype.fromXML = function(xmlDoc) {
 	if (!xmlDoc || !xmlDoc.documentElement) {
 		alert(_("xmlerror")+': Null document');
-		return false; 
+		return false;
 	}
 	this.owner.fromXML(xmlDoc.documentElement);
 	this.owner.window.close();
@@ -1359,7 +1359,7 @@ SQL.IO.prototype.clientload = function() {
 		} else {
 			throw new Error("No XML parser available.");
 		}
-	} catch(e) { 
+	} catch(e) {
 		alert(_("xmlerror")+': '+e.message);
 		return;
 	}
@@ -1367,11 +1367,11 @@ SQL.IO.prototype.clientload = function() {
 }
 
 SQL.IO.prototype.clientlocalsave = function() {
-	if (!window.localStorage) { 
+	if (!window.localStorage) {
 		alert("Sorry, your browser does not seem to support localStorage.");
 		return;
 	}
-	
+
 	var xml = this.owner.toXML();
 	if (xml.length >= (5*1024*1024)/2) { /* this is a very big db structure... */
 		alert("Warning: your database structure is above 5 megabytes in size, this is above the localStorage single key limit allowed by some browsers, example Mozilla Firefox 10");
@@ -1381,7 +1381,7 @@ SQL.IO.prototype.clientlocalsave = function() {
 	var key = prompt(_("serversaveprompt"), this._name);
 	if (key === null) { return; }
 	key = "wwwsqldesigner_databases_" + (key || "default");
-	
+
 	try {
 		localStorage.setItem(key, xml);
 		if (localStorage.getItem(key) != xml) { throw new Error("Content verification failed"); }
@@ -1393,15 +1393,15 @@ SQL.IO.prototype.clientlocalsave = function() {
 
 
 SQL.IO.prototype.clientlocalload = function() {
-	if (!window.localStorage) { 
+	if (!window.localStorage) {
 		alert("Sorry, your browser does not seem to support localStorage.");
 		return;
 	}
-	
+
 	var key = prompt(_("serverloadprompt"), this._name);
 	if (key === null) { return; }
 	key = "wwwsqldesigner_databases_" + (key || "default");
-	
+
 	try {
 		var xml = localStorage.getItem(key);
 		if (!xml) { throw new Error("No data available"); }
@@ -1409,7 +1409,7 @@ SQL.IO.prototype.clientlocalload = function() {
 		alert("Error loading database structure from localStorage! ("+e.message+")");
 		return;
 	}
-	
+
 	try {
 		if (window.DOMParser) {
 			var parser = new DOMParser();
@@ -1420,7 +1420,7 @@ SQL.IO.prototype.clientlocalload = function() {
 		} else {
 			throw new Error("No XML parser available.");
 		}
-	} catch(e) { 
+	} catch(e) {
 		alert(_("xmlerror")+': '+e.message);
 		return;
 	}
@@ -1429,18 +1429,18 @@ SQL.IO.prototype.clientlocalload = function() {
 }
 
 SQL.IO.prototype.clientlocallist = function() {
-    if (!window.localStorage) { 
+    if (!window.localStorage) {
         alert("Sorry, your browser does not seem to support localStorage.");
         return;
     }
-    
+
     /* --- Define some usefull vars --- */
     var baseKeysName = "wwwsqldesigner_databases_";
     var localLen = localStorage.length;
     var data = "";
     var schemasFound = false;
     var code = 200;
-    
+
     /* --- work --- */
     try {
         for (var i = 0; i< localLen; ++i) {
@@ -1603,7 +1603,7 @@ SQL.TableManager.prototype.init = function(owner) {
 	};
 	this.selection = [];
 	this.adding = false;
-	
+
 	var ids = ["addtable","removetable","aligntables","cleartables","addrow","edittable","tablekeys"];
 	for (var i=0;i<ids.length;i++) {
 		var id = ids[i];
@@ -1618,12 +1618,12 @@ SQL.TableManager.prototype.init = function(owner) {
 		var elm = OZ.$(id);
 		elm.innerHTML = _(id);
 	}
-	
-	
+
+
 	this.select(false);
-	
+
 	this.save = this.bind(this.save);
-	
+
 	OZ.Event.add("area", "click", this.bind(this.click));
 	OZ.Event.add("area", "contextmenu", this.bind(this.rClick));
 	OZ.Event.add(this.dom.addtable, "click", this.bind(this.preAdd));
@@ -1762,7 +1762,7 @@ SQL.TableManager.prototype.remove = function(e) {
 
 SQL.TableManager.prototype.edit = function(e) {
 	this.owner.window.open(_("edittable"), this.dom.container, this.save);
-	
+
 	var title = this.selection[0].getTitle();
 	this.dom.name.value = title;
 	try { /* throws in ie6 */
@@ -1777,7 +1777,7 @@ SQL.TableManager.prototype.edit = function(e) {
 		} catch(e) {}
 	} else {
 		this.dom.name.setSelectionRange(0, title.length);
-	} 
+	}
 }
 
 SQL.TableManager.prototype.keys = function(e) { /* open keys dialog */
@@ -1792,7 +1792,7 @@ SQL.TableManager.prototype.save = function() {
 SQL.TableManager.prototype.press = function(e) {
 	var target = OZ.Event.target(e).nodeName.toLowerCase();
 	if (target == "textarea" || target == "input") { return; } /* not when in form field */
-	
+
 	if (this.owner.rowManager.selected) { return; } /* do not process keypresses if a row is selected */
 
 	if (!this.selection.length) { return; } /* nothing if selection is active */
@@ -1815,7 +1815,7 @@ SQL.RowManager.prototype.init = function(owner) {
 	this.selected = null;
 	this.creating = false;
 	this.connecting = false;
-	
+
 	var ids = ["editrow","removerow","uprow","downrow","foreigncreate","foreignconnect","foreigndisconnect"];
 	for (var i=0;i<ids.length;i++) {
 		var id = ids[i];
@@ -1825,7 +1825,7 @@ SQL.RowManager.prototype.init = function(owner) {
 	}
 
 	this.select(false);
-	
+
 	OZ.Event.add(this.dom.editrow, "click", this.bind(this.edit));
 	OZ.Event.add(this.dom.uprow, "click", this.bind(this.up));
 	OZ.Event.add(this.dom.downrow, "click", this.bind(this.down));
@@ -1849,15 +1849,15 @@ SQL.RowManager.prototype.select = function(row) { /* activate a row */
 
 SQL.RowManager.prototype.tableClick = function(e) { /* create relation after clicking target table */
 	if (!this.creating) { return; }
-	
+
 	var r1 = this.selected;
 	var t2 = e.target;
-	
+
 	var p = this.owner.getOption("pattern");
 	p = p.replace(/%T/g,r1.owner.getTitle());
 	p = p.replace(/%t/g,t2.getTitle());
 	p = p.replace(/%R/g,r1.getTitle());
-	
+
 	var r2 = t2.addRow(p, r1.data);
 	r2.update({"type":SQL.Designer.getFKTypeFor(r1.data.type)});
 	r2.update({"ai":false});
@@ -1866,12 +1866,12 @@ SQL.RowManager.prototype.tableClick = function(e) { /* create relation after cli
 
 SQL.RowManager.prototype.rowClick = function(e) { /* draw relation after clicking target row */
 	if (!this.connecting) { return; }
-	
+
 	var r1 = this.selected;
 	var r2 = e.target;
-	
+
 	if (r1 == r2) { return; }
-	
+
 	this.owner.addRelation(r1, r2);
 }
 
@@ -1929,7 +1929,7 @@ SQL.RowManager.prototype.remove = function(e) {
 	if (!result) { return; }
 	var t = this.selected.owner;
 	this.selected.owner.removeRow(this.selected);
-	
+
 	var next = false;
 	if (t.rows) { next = t.rows[t.rows.length-1]; }
 	this.select(next);
@@ -1947,14 +1947,14 @@ SQL.RowManager.prototype.redraw = function() {
 		this.dom.editrow.disabled = false;
 		this.dom.foreigncreate.disabled = !(this.selected.isUnique());
 		this.dom.foreignconnect.disabled = !(this.selected.isUnique());
-		
+
 		this.dom.foreigndisconnect.disabled = true;
 		var rels = this.selected.relations;
 		for (var i=0;i<rels.length;i++) {
 			var r = rels[i];
 			if (r.row2 == this.selected) { this.dom.foreigndisconnect.disabled = false; }
 		}
-		
+
 	} else {
 		this.dom.uprow.disabled = true;
 		this.dom.downrow.disabled = true;
@@ -1968,10 +1968,10 @@ SQL.RowManager.prototype.redraw = function() {
 
 SQL.RowManager.prototype.press = function(e) {
 	if (!this.selected) { return; }
-	
+
 	var target = OZ.Event.target(e).nodeName.toLowerCase();
 	if (target == "textarea" || target == "input") { return; } /* not when in form field */
-	
+
 	switch (e.keyCode) {
 		case 38:
 			this.up();
@@ -2032,7 +2032,7 @@ SQL.KeyManager.prototype.build = function() {
 		var elm = OZ.$(id);
 		elm.innerHTML = _(id);
 	}
-	
+
 	var types = ["PRIMARY","INDEX","UNIQUE","FULLTEXT"];
 	OZ.DOM.clear(this.dom.type);
 	for (var i=0;i<types.length;i++) {
@@ -2051,7 +2051,7 @@ SQL.KeyManager.prototype.build = function() {
 	OZ.Event.add(this.dom.keyremove, "click", this.bind(this.remove));
 	OZ.Event.add(this.dom.left, "click", this.bind(this.left));
 	OZ.Event.add(this.dom.right, "click", this.bind(this.right));
-	
+
 	this.dom.container.parentNode.removeChild(this.dom.container);
 }
 
@@ -2094,7 +2094,7 @@ SQL.KeyManager.prototype.purge = function() { /* remove empty keys */
 SQL.KeyManager.prototype.sync = function(table) { /* sync content with given table */
 	this.table = table;
 	this.dom.listlabel.innerHTML = _("keyslistlabel").replace(/%s/,table.getTitle());
-	
+
 	OZ.DOM.clear(this.dom.list);
 	for (var i=0;i<table.keys.length;i++) {
 		var k = table.keys[i];
@@ -2103,8 +2103,8 @@ SQL.KeyManager.prototype.sync = function(table) { /* sync content with given tab
 		var str = (i+1)+": "+k.getLabel();
 		o.innerHTML = str;
 	}
-	if (table.keys.length) { 
-		this.switchTo(0); 
+	if (table.keys.length) {
+		this.switchTo(0);
 	} else {
 		this.disable();
 	}
@@ -2120,10 +2120,10 @@ SQL.KeyManager.prototype.switchTo = function(index) { /* show Nth key */
 	var k = this.table.keys[index];
 	this.key = k;
 	this.option = this.dom.list.getElementsByTagName("option")[index];
-	
+
 	this.dom.list.selectedIndex = index;
 	this.dom.name.value = k.getName();
-	
+
 	var opts = this.dom.type.getElementsByTagName("option");
 	for (var i=0;i<opts.length;i++) {
 		if (opts[i].value == k.getType()) { this.dom.type.selectedIndex = i; }
@@ -2136,7 +2136,7 @@ SQL.KeyManager.prototype.switchTo = function(index) { /* show Nth key */
 		o.value = o.innerHTML;
 		this.dom.fields.appendChild(o);
 	}
-	
+
 	OZ.DOM.clear(this.dom.avail);
 	for (var i=0;i<this.table.rows.length;i++) {
 		var r = this.table.rows[i];
@@ -2222,14 +2222,14 @@ SQL.Window.prototype.init = function(owner) {
 	OZ.Event.add(this.dom.ok, "click", this.bind(this.ok));
 	OZ.Event.add(this.dom.cancel, "click", this.bind(this.close));
 	OZ.Event.add(document, "keydown", this.bind(this.key));
-	
+
 	this.sync = this.bind(this.sync);
-	
+
 	OZ.Event.add(window, "scroll", this.sync);
 	OZ.Event.add(window, "resize", this.sync);
 	this.state = 0;
 	this.hideThrobber();
-	
+
 	this.sync();
 }
 
@@ -2251,12 +2251,12 @@ SQL.Window.prototype.open = function(title, content, callback) {
 	this.dom.background.style.visibility = "visible";
 	OZ.DOM.clear(this.dom.content);
 	this.dom.content.appendChild(content);
-	
+
 	var win = OZ.DOM.win();
 	var scroll = OZ.DOM.scroll();
 	this.dom.container.style.left = Math.round(scroll[0] + (win[0] - this.dom.container.offsetWidth)/2)+"px";
 	this.dom.container.style.top = Math.round(scroll[1] + (win[1] - this.dom.container.offsetHeight)/2)+"px";
-	
+
 	this.dom.cancel.style.visibility = (this.callback ? "" : "hidden");
 	this.dom.container.style.visibility = "visible";
 
@@ -2328,7 +2328,7 @@ SQL.Options.prototype.build = function() {
 		var elm = OZ.$(id);
 		elm.innerHTML = _(id);
 	}
-	
+
 	var ls = CONFIG.AVAILABLE_LOCALES;
 	OZ.DOM.clear(this.dom.optionlocale);
 	for (var i=0;i<ls.length;i++) {
@@ -2349,9 +2349,9 @@ SQL.Options.prototype.build = function() {
 		if (this.owner.getOption("db") == dbs[i]) { this.dom.optiondb.selectedIndex = i; }
 	}
 
-	
+
 	OZ.Event.add(this.dom.btn, "click", this.bind(this.click));
-	
+
 	this.dom.container.parentNode.removeChild(this.dom.container);
 }
 
@@ -2384,7 +2384,7 @@ SQL.Toggle.prototype.init = function(elm) {
 	this._state = null;
 	this._elm = elm;
 	OZ.Event.add(elm, "click", this._click.bind(this));
-	
+
 	var defaultState = true;
 	if (document.location.href.match(/toolbar=hidden/)) { defaultState = false; }
 	this._switch(defaultState);
@@ -2411,14 +2411,14 @@ SQL.Designer = OZ.Class().extend(SQL.Visual);
 
 SQL.Designer.prototype.init = function() {
 	SQL.Designer = this;
-	
+
 	this.tables = [];
 	this.relations = [];
 	this.title = document.title;
-	
+
 	SQL.Visual.prototype.init.apply(this);
 	new SQL.Toggle(OZ.$("toggle"));
-	
+
 	this.dom.container = OZ.$("area");
 	this.minSize = [
 		this.dom.container.offsetWidth,
@@ -2426,7 +2426,7 @@ SQL.Designer.prototype.init = function() {
 	];
 	this.width = this.minSize[0];
 	this.height = this.minSize[1];
-	
+
 	this.typeIndex = false;
 	this.fkTypeFor = false;
 
@@ -2451,12 +2451,12 @@ SQL.Designer.prototype.sync = function() {
 		w = Math.max(w, t.x + t.width);
 		h = Math.max(h, t.y + t.height);
 	}
-	
+
 	this.width = w;
 	this.height = h;
 	this.map.sync();
 
-	if (this.vector) {	
+	if (this.vector) {
 		this.dom.svg.setAttribute("width", this.width);
 		this.dom.svg.setAttribute("height", this.height);
 	}
@@ -2508,7 +2508,7 @@ SQL.Designer.prototype.init2 = function() { /* secondary init, after locale & da
 	this.window = new SQL.Window(this);
 
 	this.sync();
-	
+
 	OZ.$("docs").value = _("docs");
 
 	var url = window.location.href;
@@ -2526,7 +2526,7 @@ SQL.Designer.prototype.getMaxZ = function() { /* find max zIndex */
 		var z = this.tables[i].getZ();
 		if (z > max) { max = z; }
 	}
-	
+
 	OZ.$("controls").style.zIndex = max+5;
 	return max;
 }
@@ -2592,8 +2592,8 @@ SQL.Designer.prototype.getOption = function(name) {
 		case "staticpath": return CONFIG.STATIC_PATH || "";
 		case "xhrpath": return CONFIG.XHR_PATH || "";
 		case "snap": return 0;
-		case "showsize": return 0;
-		case "showtype": return 0;
+		case "showsize": return CONFIG.SHOWSIZE || 0;
+		case "showtype": return CONFIG.SHOWTYPE || 0;
 		case "pattern": return "%R_%T";
 		case "hide": return false;
 		case "vector": return true;
@@ -2631,7 +2631,7 @@ SQL.Designer.prototype.alignTables = function() {
 	var x = 10;
 	var y = 10;
 	var max = 0;
-	
+
 	this.tables.sort(function(a,b){
 		return b.getRelations().length - a.getRelations().length;
 	});
@@ -2664,7 +2664,7 @@ SQL.Designer.prototype.toXML = function() {
 	xml += '<!-- SQL XML created by WWW SQL Designer, http://code.google.com/p/wwwsqldesigner/ -->\n';
 	xml += '<!-- Active URL: ' + location.href + ' -->\n';
 	xml += '<sql>\n';
-	
+
 	/* serialize datatypes */
 	if (window.XMLSerializer) {
 		var s = new XMLSerializer();
@@ -2674,7 +2674,7 @@ SQL.Designer.prototype.toXML = function() {
 	} else {
 		alert(_("errorxml")+': '+e.message);
 	}
-	
+
 	for (var i=0;i<this.tables.length;i++) {
 		xml += this.tables[i].toXML();
 	}
@@ -2693,8 +2693,8 @@ SQL.Designer.prototype.fromXML = function(node) {
 	}
 
 	for (var i=0;i<this.tables.length;i++) { /* ff one-pixel shift hack */
-		this.tables[i].select(); 
-		this.tables[i].deselect(); 
+		this.tables[i].select();
+		this.tables[i].deselect();
 	}
 
 	/* relations */
@@ -2703,7 +2703,7 @@ SQL.Designer.prototype.fromXML = function(node) {
 		var rel = rs[i];
 		var tname = rel.getAttribute("table");
 		var rname = rel.getAttribute("row");
-		
+
 		var t1 = this.findNamedTable(tname);
 		if (!t1) { continue; }
 		var r1 = t1.findNamedRow(rname);
